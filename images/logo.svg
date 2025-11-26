@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 180" role="img" aria-labelledby="logoTitle">
+  <title id="logoTitle">Dog Friendly Map Logo</title>
+  <g fill="none" stroke="#2f343a" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M80 12c-30 0-54 24-54 54 0 36 41 84 52 96a4 4 0 0 0 6 0c11-12 52-60 52-96 0-30-24-54-54-54z" stroke-width="8"/>
+    <ellipse cx="80" cy="90" rx="22" ry="20" stroke-width="8"/>
+    <ellipse cx="54" cy="68" rx="10" ry="12" stroke-width="8"/>
+    <ellipse cx="106" cy="68" rx="10" ry="12" stroke-width="8"/>
+    <ellipse cx="68" cy="54" rx="9" ry="11" stroke-width="8"/>
+    <ellipse cx="92" cy="54" rx="9" ry="11" stroke-width="8"/>
+  </g>
+  <ellipse cx="80" cy="154" rx="22" ry="10" fill="#2f343a" opacity="0.15"/>
+</svg>
