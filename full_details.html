@@ -1,0 +1,586 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Park — Full Details</title>
+  <style>
+    :root{
+      /* CSS */
+      --brand: #4a90e2;         
+      --brand-600:#357abd;
+      --brand-700:#357abd;
+      --bg: #f6f7f9;            
+      --card: #ffffff;          
+      --text: #1f2937;          
+      --muted: #667085;          
+      --border: #e5e7eb;        
+      --accent: #10b981;         
+      --danger: #ef4444;        
+      --radius: 16px;            
+      --shadow: 0 8px 28px rgba(0,0,0,.08);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background:var(--bg); color:var(--text); line-height:1.55;
+    }
+    a{color:var(--brand-700); text-decoration:none}
+
+    .container{ max-width:1080px; margin:0 auto; padding:20px 16px 44px }
+    .toolbar{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px }
+    .btn{ display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; border:1px solid var(--border); background:#fff; cursor:pointer }
+    .btn.primary{ background:var(--brand); border-color:var(--brand-600); color:#fff; font-weight:700 }
+    .btn.danger{ background:#fff; border-color:var(--danger); color:var(--danger) }
+    .btn.ghost{ background:transparent }
+    .btn:disabled{ opacity:.5; cursor:not-allowed }
+
+    .hero{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden }
+    .hero-top{ display:grid; grid-template-columns: 1fr; }
+    .hero-media{ position:relative; min-height:220px; background:#e9f5ee }
+    .hero-media img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover }
+    .hero-body{ padding:16px }
+    .title{ display:flex; gap:10px; align-items:center; flex-wrap:wrap }
+    h1{ font-size: clamp(22px, 3.2vw, 32px); margin:0; letter-spacing:.2px }
+    .badge{ padding:6px 10px; border:1px solid var(--border); border-radius:999px; background:#fff; color:var(--muted); font-size:12px }
+    .meta{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:6px; color:var(--muted); font-size:14px }
+    .rating{ display:inline-flex; align-items:center; gap:4px; color:#f59e0b }
+
+    .hero-actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:12px }
+
+    .grid{ display:grid; gap:16px; grid-template-columns: 1fr }
+    @media (min-width: 980px){ .grid{ grid-template-columns: 1.1fr .9fr } }
+
+    .card{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow) }
+    .section-title{ padding:16px 18px; border-bottom:1px solid var(--border); font-weight:800 }
+    .section{ padding:16px 18px }
+    .kv{ display:grid; grid-template-columns: 160px 1fr; gap:12px; padding:10px 0; border-bottom:1px dashed var(--border) }
+    .kv:last-child{ border-bottom:none }
+    .k{ color:var(--muted) }
+
+    .chips{ display:flex; flex-wrap:wrap; gap:8px }
+    .chip{ padding:6px 10px; border:1px solid var(--border); border-radius:999px; background:#fff; color:var(--text); font-size:12px }
+  .chip.ok{ border-color:#6fb1ff; background:#eaf6ff; color:#6fb1ff }
+    .chip.warn{ border-color:#fde68a; background:#fffbeb }
+
+    .map{ height:280px; border-radius:12px; background:#e5f3eb; border:1px solid var(--border); display:grid; place-items:center; color:var(--muted) }
+
+    /* Reviews */
+    .stars{ display:flex; gap:6px; align-items:center }
+    .star{ font-size:22px; cursor:pointer; user-select:none; color:#d1d5db }
+    .star.active{ color:#f59e0b }
+    .muted{ color:var(--muted) }
+    .row{ display:flex; gap:12px; flex-wrap:wrap }
+    input[type="text"], input[type="url"], textarea, select{ width:100%; border:1px solid var(--border); border-radius:12px; padding:12px 14px; background:#fff; font-size:15px; outline:none }
+    textarea{ min-height:108px; resize:vertical }
+
+    .list{ padding:8px 8px 12px }
+    .item{ display:grid; grid-template-columns:48px 1fr; gap:12px; padding:14px; border-radius:14px; border:1px solid var(--border); background:#fff; margin:10px 0 }
+    .avatar{ width:48px; height:48px; border-radius:50%; display:grid; place-items:center; background:#ecfdf5; color:var(--brand-700); font-weight:800 }
+    .item-meta{ display:flex; align-items:center; gap:8px; flex-wrap:wrap }
+    .body{ margin-top:6px; white-space:pre-wrap }
+    .photo{ margin-top:10px; border-radius:12px; max-width:100%; border:1px solid var(--border) }
+
+    .toolbar{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:space-between }
+
+    .empty{ padding:18px; color:var(--muted); text-align:center }
+  </style>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+  <div class="container" id="app" aria-live="polite">
+    <!-- Top toolbar: back, share -->
+    <div class="toolbar">
+      <button class="btn" id="btn-back" title="Go back">← Back</button>
+      <div class="muted" id="crumb"></div>
+      <span style="margin-left:auto"></span>
+      <button class="btn" id="btn-share" title="Copy link">Share</button>
+      <a class="btn" id="btn-directions" target="_blank" rel="noopener">Get Directions</a>
+    </div>
+
+    <!-- Hero section with park name, address, rating, favorite -->
+    <section class="hero">
+      <div class="hero-top">
+        <div class="hero-body">
+          <div class="title">
+            <h1 id="park-name">Park Name</h1>
+            <span class="badge" id="park-id">ID: -</span>
+            <button class="btn" id="btn-fav">☆ Add to Favorites</button>
+          </div>
+          <div class="meta">
+            <span id="park-address">Address</span>
+            <span>•</span>
+            <span id="park-suburb">Suburb</span>
+            <span class="rating" id="summary-rating" aria-label="Average rating">☆☆☆☆☆</span>
+          </div>
+          <div class="hero-actions">
+            <a class="btn primary" id="btn-open-official" target="_blank" rel="noopener">Official Site</a>
+            <button class="btn ghost" id="btn-report">Report an issue</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid" style="margin-top:16px">
+      <!-- Left column: Details -->
+      <section class="card" aria-labelledby="details-title">
+        <div class="section-title" id="details-title">Details</div>
+        <div class="section" id="details-section">
+          <div class="kv"><div class="k">Hours</div><div id="park-hours">-</div></div>
+          <div class="kv"><div class="k">Dog Rules</div><div id="park-dogrules">-</div></div>
+          <div class="kv"><div class="k">Amenities</div><div class="chips" id="park-amenities"></div></div>
+          <div class="kv"><div class="k">Facilities</div><div class="chips" id="park-facilities"></div></div>
+          <div class="kv"><div class="k">Notes</div><div id="park-notes">-</div></div>
+          <div class="kv"><div class="k">Map</div>
+            <div>
+              <div class="map" id="map">Map preview</div>
+              <div class="muted" style="margin-top:6px">Tip: open “Get Directions” for navigation apps.</div>
+              <div style="margin-top:8px">
+                <button id="map-get-directions" class="btn primary">Get Directions</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right column: Reviews (ratings and comments) -->
+      <section class="card" aria-labelledby="reviews-title">
+        <div class="section-title" id="reviews-title">Reviews</div>
+        <div class="section">
+          <!-- Rating and review form -->
+          <form id="review-form">
+            <div class="row">
+              <div style="flex:1; min-width:160px">
+                <label for="author" class="muted">Name (optional)</label>
+                <input type="text" id="author" maxlength="40" placeholder="e.g. Local resident" />
+              </div>
+              <div style="min-width:180px">
+                <label class="muted">Rating</label>
+                <div class="stars" id="star-input" role="radiogroup" aria-label="Rating from 1 to 5">
+                  <button class="star" type="button" aria-label="1 star" data-value="1">★</button>
+                  <button class="star" type="button" aria-label="2 stars" data-value="2">★</button>
+                  <button class="star" type="button" aria-label="3 stars" data-value="3">★</button>
+                  <button class="star" type="button" aria-label="4 stars" data-value="4">★</button>
+                  <button class="star" type="button" aria-label="5 stars" data-value="5">★</button>
+                  <input class="sr-only" id="rating" type="number" min="1" max="5" />
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:8px">
+              <label for="content" class="muted">Your review</label>
+              <textarea id="content" maxlength="600" placeholder="Share your experience: off-leash area, shade, water, safety, parking, cleanliness…" required></textarea>
+              <div class="row" style="align-items:center; margin-top:6px">
+                <div class="muted" id="char-count">0 / 600</div>
+              </div>
+            </div>
+            <div class="row" style="margin-top:8px">
+              <div style="flex:1; min-width:200px">
+                <label for="photo" class="muted">Photo URL (optional)</label>
+                <input type="url" id="photo" placeholder="https://… (will be previewed in your review)" />
+              </div>
+              <div style="flex:1; min-width:160px">
+                <label for="visit-date" class="muted">Visited on (optional)</label>
+                <input type="text" id="visit-date" placeholder="e.g. 2025-09 or last Saturday" />
+              </div>
+            </div>
+            <div class="row" style="margin-top:12px; justify-content:space-between">
+              <button class="btn" type="button" id="clear-form">Clear</button>
+              <button class="btn primary" type="submit" id="submit-btn">Submit Review</button>
+            </div>
+            <div class="muted" style="margin-top:8px">Reviews are stored locally in your browser (no server). Clearing browser data will remove them.</div>
+          </form>
+        </div>
+
+        <div class="section">
+          <!-- Toolbar: sort/filter -->
+          <div class="toolbar">
+            <div>
+              <div class="muted" id="review-summary">No ratings yet</div>
+            </div>
+            <div class="row" style="align-items:center">
+              <label for="sort-select" class="muted">Sort</label>
+              <select id="sort-select">
+                <option value="newest">Newest</option>
+                <option value="highest">Top rated</option>
+                <option value="lowest">Lowest rated</option>
+              </select>
+            </div>
+          </div>
+          <!-- Review list -->
+          <div class="list" id="review-list">
+            <div class="empty">Be the first to write a review.</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    ;(() => {
+      /* Main script */
+      const qs = new URLSearchParams(location.search)
+      const parkId = qs.get('parkId') || 'unknown-park'
+      const STORAGE_COMMENTS = `park-comments::${parkId}`
+      const STORAGE_FAVS = 'park-favorites'
+      const STORAGE_PROFILE = 'dfm_profile_v1'
+
+      function escapeHtml(str){ return String(str).replace(/[&<>"']/g,(c)=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])) }
+      function escapeAttr(str){ return String(str).replace(/["'`<>\\]/g,'') }
+
+      /* Read Profile Data */
+      function getProfileData(){
+        try {
+          const raw = localStorage.getItem(STORAGE_PROFILE);
+          if(!raw) return null;
+          return JSON.parse(raw);
+        } catch(e) {
+          return null;
+        }
+      }
+
+      function getUserDisplayName(){
+        const profile = getProfileData();
+        return profile?.displayName || 'Anonymous';
+      }
+
+      function getUserTags(){
+        const profile = getProfileData();
+        if(!profile || !profile.prefs) return [];
+        
+        const tags = [];
+        const prefs = profile.prefs;
+        
+        // Walker time tag
+        if(prefs.walkerTime === 'Morning') tags.push('Morning walker');
+        else if(prefs.walkerTime === 'Evening') tags.push('Evening walker');
+        
+        // Dog size tag
+        if(prefs.dogSize === 'Small') tags.push('Small dog owner');
+        else if(prefs.dogSize === 'Large') tags.push('Large dog owner');
+        
+        // Experience tag
+        if(prefs.experience === 'New walker') tags.push('New walker');
+        else if(prefs.experience === 'Experienced') tags.push('Experienced');
+        
+        return tags;
+      }
+
+      /*Data Source */
+      const demoData = {
+        id: parkId,
+        name: qs.get('parkName') || 'Demo Park',
+        address: qs.get('address') || '123 Riverwalk Dr, Brisbane QLD',
+        suburb: qs.get('suburb') || 'Newstead',
+        state: qs.get('state') || 'QLD',
+        postcode: qs.get('postcode') || '4006',
+        hours: 'Open 24 hours',
+        dogRules: qs.get('dogRules') || 'Off-leash in signed areas. Dogs must be on-leash elsewhere.',
+        amenities: parseList(qs.get('amenities') || 'Toilets, Drinking water, BBQ, Picnic tables, Playground'),
+        facilities: parseList(qs.get('facilities') || 'Shaded areas, Walking paths, Fenced off-leash zone'),
+        notes: qs.get('notes') || 'Popular at weekends. Bring water in summer.',
+        offLeash: strToBool(qs.get('offLeash') ?? 'true'),
+        fenced: strToBool(qs.get('fenced') ?? 'true'),
+        lat: Number(qs.get('lat') || -27.455),
+        lng: Number(qs.get('lng') || 153.046),
+        photo: qs.get('image') || 'https://images.unsplash.com/photo-1550954835-47df8313d17b?q=80&w=1600&auto=format&fit=crop',
+        officialUrl: qs.get('officialUrl') || 'https://www.brisbane.qld.gov.au',
+      }
+
+      // Override demoData withJSON if present
+      const packed = qs.get('park')
+      if(packed){
+        try{ Object.assign(demoData, JSON.parse(atob(packed))) }catch(err){ console.warn('invalid park payload', err) }
+      }
+
+      function parseList(s){ return s.split(',').map(x=>x.trim()).filter(Boolean) }
+      function strToBool(v){ return String(v).toLowerCase() === 'true' }
+
+      /* =========================
+         Render Hero and Details
+         ========================= */
+      const el = {
+        name: document.getElementById('park-name'),
+        id: document.getElementById('park-id'),
+        addr: document.getElementById('park-address'),
+        suburb: document.getElementById('park-suburb'),
+        img: document.getElementById('hero-img'),
+        directions: document.getElementById('btn-directions'),
+        official: document.getElementById('btn-open-official'),
+        fav: document.getElementById('btn-fav'),
+        hours: document.getElementById('park-hours'),
+        dogrules: document.getElementById('park-dogrules'),
+        amenities: document.getElementById('park-amenities'),
+        facilities: document.getElementById('park-facilities'),
+        notes: document.getElementById('park-notes'),
+        map: document.getElementById('map'),
+        crumb: document.getElementById('crumb'),
+        sumRating: document.getElementById('summary-rating')
+      }
+
+      // Render hero image and key information
+      el.name.textContent = demoData.name
+      el.id.textContent = `ID: ${demoData.id}`
+      el.addr.textContent = demoData.address
+      el.suburb.textContent = `${demoData.suburb}, ${demoData.state} ${demoData.postcode}`
+      el.official.href = demoData.officialUrl
+      el.directions.href = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(demoData.name)}&destination_place_id=&destination_address=${encodeURIComponent(demoData.address)}`
+      el.hours.textContent = demoData.hours
+      el.dogrules.textContent = demoData.dogRules
+      el.notes.textContent = demoData.notes
+      el.crumb.textContent = `${demoData.suburb} • ${demoData.state}`
+
+      // amenities & facilities chips
+      el.amenities.innerHTML = demoData.amenities.map(x=>`<span class="chip ok">${escapeHtml(x)}</span>`).join('')
+      const flags = [demoData.offLeash ? 'Off‑leash area' : 'On‑leash only', demoData.fenced ? 'Fenced' : 'Not fenced']
+      el.facilities.innerHTML = [...demoData.facilities, ...flags].map(x=>`<span class="chip">${escapeHtml(x)}</span>`).join('')
+
+      // Live map 
+      function initDetailMap(){
+        try{
+          if(window.L && typeof window.L.map === 'function'){
+            // clear placeholder
+            el.map.textContent = '';
+            el.map.style.padding = '0';
+            // ensure the map container has an explicit height 
+            const mapObj = L.map('map', { scrollWheelZoom: false }).setView([demoData.lat, demoData.lng], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              maxZoom: 19,
+              attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(mapObj);
+            L.marker([demoData.lat, demoData.lng]).addTo(mapObj).bindPopup(demoData.name || 'Park').openPopup();
+          } else {
+            el.map.textContent = `Lat ${demoData.lat.toFixed(5)}, Lng ${demoData.lng.toFixed(5)}`;
+          }
+        }catch(err){
+          console.warn('Map init failed', err);
+          el.map.textContent = `Lat ${demoData.lat.toFixed(5)}, Lng ${demoData.lng.toFixed(5)}`;
+        }
+      }
+      setTimeout(initDetailMap, 120);
+
+      /* =========================
+         Favorites Functionality (localStorage)
+         ========================= */
+      function loadFavs(){ try{ return JSON.parse(localStorage.getItem(STORAGE_FAVS)||'[]') }catch{ return [] } }
+      function saveFavs(arr){ localStorage.setItem(STORAGE_FAVS, JSON.stringify(arr)) }
+      function isFav(){ return loadFavs().some(x => x.id === demoData.id) }
+      function setFavBtn(){ el.fav.textContent = isFav() ? '★ Favorited' : '☆ Add to Favorites' }
+      setFavBtn()
+      el.fav.addEventListener('click', () => {
+        const favs = loadFavs()
+        const idx = favs.findIndex(x => x.id === demoData.id)
+        if(idx>=0){ favs.splice(idx,1) } else {
+          // Save richer park object so home preferences can render useful info
+          favs.push({
+            id: demoData.id,
+            name: demoData.name,
+            suburb: demoData.suburb,
+            address: demoData.address || '',
+            lat: demoData.lat,
+            lng: demoData.lng,
+            facilities: demoData.facilities || [],
+            photo: demoData.photo || ''
+          })
+        }
+        saveFavs(favs); setFavBtn();
+        // If preferences modal is open in parent window, update it (useful when opened in same tab)
+        try{ if(window.opener && window.opener.updatePreferences) window.opener.updatePreferences() }catch(e){}
+      })
+
+      /* =========================
+         Share / Back / Report
+         ========================= */
+      document.getElementById('btn-back').addEventListener('click', ()=> history.back())
+      document.getElementById('btn-share').addEventListener('click', async ()=>{
+        const url = location.href
+        try{ await navigator.clipboard.writeText(url); alert('Link copied to clipboard') }catch{ alert(url) }
+      })
+      document.getElementById('btn-report').addEventListener('click', ()=>{
+        const mailto = `mailto:?subject=Issue report: ${encodeURIComponent(demoData.name)}&body=Describe the issue here…%0A%0A${encodeURIComponent(location.href)}`
+        location.href = mailto
+      })
+
+      // Map directions button under Map preview
+      const mapDirBtn = document.getElementById('map-get-directions')
+      if(mapDirBtn){
+        mapDirBtn.addEventListener('click', ()=>{
+          const url = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(demoData.lat + ',' + demoData.lng)}`
+          window.open(url, '_blank')
+        })
+      }
+
+      /* =========================
+         Reviews: Ratings + Comments (localStorage isolated by parkId)
+         ========================= */
+      const form = document.getElementById('review-form')
+      const ratingInput = document.getElementById('rating')
+      const starWrap = document.getElementById('star-input')
+      const contentEl = document.getElementById('content')
+      const charCount = document.getElementById('char-count')
+      const listEl = document.getElementById('review-list')
+      const sortSelect = document.getElementById('sort-select')
+      const reviewSummary = document.getElementById('review-summary')
+
+      // Character count
+      const updateCount = ()=>{ charCount.textContent = `${contentEl.value.length} / ${contentEl.maxLength}` }
+      contentEl.addEventListener('input', updateCount); updateCount()
+
+      // Star rating interaction (keyboard accessible)
+      let currentStars = 0
+      const stars = Array.from(starWrap.querySelectorAll('.star'))
+      const applyStars = (n) => { stars.forEach((s, i) => s.classList.toggle('active', i < n)) }
+      starWrap.addEventListener('click', (e)=>{
+        const btn = e.target.closest('.star'); if(!btn) return
+        currentStars = Number(btn.dataset.value); ratingInput.value = String(currentStars); applyStars(currentStars)
+      })
+      starWrap.addEventListener('keydown', (e)=>{
+        if(e.key==='ArrowRight' || e.key==='ArrowUp'){ e.preventDefault(); currentStars = Math.min(5, currentStars+1) }
+        if(e.key==='ArrowLeft' || e.key==='ArrowDown'){ e.preventDefault(); currentStars = Math.max(1, currentStars-1) }
+        ratingInput.value = String(currentStars); applyStars(currentStars)
+      })
+
+      // Storage functions
+      const load = ()=>{ try{ return JSON.parse(localStorage.getItem(STORAGE_COMMENTS) || '[]') }catch{ return [] } }
+      const save = (arr)=> localStorage.setItem(STORAGE_COMMENTS, JSON.stringify(arr))
+
+      const fmtDate = (iso)=> new Date(iso).toLocaleString('en-AU', { hour12:false })
+      const starsSpan = (n)=> `<span class="rating" aria-label="rating ${n} stars">${'★'.repeat(n)}${'☆'.repeat(5-n)}</span>`
+      const avatarText = (name)=> (name?.trim()?.[0] || 'A').toUpperCase()
+
+      function refreshAverage(){
+        const data = load()
+        if(!data.length){ el.sumRating.textContent = '☆☆☆☆☆'; reviewSummary.textContent = 'No ratings yet'; return }
+        const avg = data.reduce((a,b)=> a+(b.rating||0),0)/data.length
+        reviewSummary.textContent = `${data.length} reviews · average ${avg.toFixed(1)}★`
+        // Display as 0-5 stars (rounded to nearest integer)
+        const r = Math.round(avg)
+        el.sumRating.textContent = '★'.repeat(r) + '☆'.repeat(5-r)
+        el.sumRating.setAttribute('aria-label', `Average rating ${avg.toFixed(1)} stars`)
+      }
+
+      function render(){
+        const data = load()
+        if(!data.length){ listEl.innerHTML = '<div class="empty">Be the first to write a review.</div>'; refreshAverage(); return }
+        // Sorting
+        const sort = sortSelect.value
+        const items = data.slice().sort((a,b)=>{
+          if(sort==='highest') return (b.rating||0)-(a.rating||0)
+          if(sort==='lowest') return (a.rating||0)-(b.rating||0)
+          return new Date(b.createdAt) - new Date(a.createdAt)
+        })
+        listEl.innerHTML = items.map(x=>{
+          // Build user tags HTML
+          let userTagsHtml = '';
+          if(x.userTags && x.userTags.length > 0) {
+            userTagsHtml = `<div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:4px;">${x.userTags.map(tag => `<span class="badge" style="background:#e3f2fd; color:#1976d2; border-color:#bbdefb; font-size:11px; padding:4px 8px;">${escapeHtml(tag)}</span>`).join('')}</div>`;
+          }
+          
+          return `
+          <article class="item" data-id="${x.id}">
+            <div class="avatar" aria-hidden="true">${avatarText(x.author)}</div>
+            <div>
+              <div class="item-meta">
+                <strong>${escapeHtml(x.author || 'Anonymous')}</strong>
+                <span class="muted">${fmtDate(x.createdAt)}</span>
+                ${x.rating ? starsSpan(x.rating) : ''}
+                ${x.visitDate ? `<span class="badge">Visited: ${escapeHtml(x.visitDate)}</span>` : ''}
+              </div>
+              ${userTagsHtml}
+              <div class="body">${escapeHtml(x.content)}</div>
+              ${x.photo ? `<img class="photo" alt="review photo" loading="lazy" src="${escapeAttr(x.photo)}" />` : ''}
+              <div class="row" style="margin-top:8px; align-items:center">
+                <button class="btn ghost like-btn" aria-label="Like">👍 <span>${x.likes||0}</span></button>
+                <span class="muted">·</span>
+                <button class="btn ghost del-btn" aria-label="Delete this review">Delete</button>
+              </div>
+            </div>
+          </article>
+        `}).join('')
+        refreshAverage()
+      }
+
+      sortSelect.addEventListener('change', render)
+      listEl.addEventListener('click', (e)=>{
+        const likeBtn = e.target.closest('.like-btn')
+        const delBtn = e.target.closest('.del-btn')
+        const item = e.target.closest('.item')
+        if(!item) return
+        const id = item.getAttribute('data-id')
+        const data = load()
+        const idx = data.findIndex(x => x.id === id)
+        if(idx<0) return
+        if(likeBtn){ data[idx].likes = (data[idx].likes||0)+1; save(data); render(); return }
+        if(delBtn){ if(confirm('Delete this review?')){ data.splice(idx,1); save(data); render() } }
+      })
+
+      form.addEventListener('submit', (e)=>{
+        e.preventDefault()
+        const authorInput = document.getElementById('author').value.trim()
+        const rating = Number(ratingInput.value || currentStars)
+        const content = contentEl.value.trim()
+        const photo = document.getElementById('photo').value.trim()
+        const visitDate = document.getElementById('visit-date').value.trim()
+        if(!content){ alert('Please enter your review'); return }
+        if(!(rating>=1 && rating<=5)){ alert('Please select 1–5 stars'); return }
+        
+        // Use profile display name if available, otherwise use input or 'Anonymous'
+        const author = authorInput || getUserDisplayName()
+        const userTags = getUserTags()
+        
+        const now = new Date()
+        const payload = {
+          id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()+Math.random()),
+          author, 
+          userTags,
+          rating, 
+          content, 
+          photo, 
+          visitDate,
+          createdAt: now.toISOString(), 
+          likes: 0
+        }
+        const data = load(); data.push(payload); save(data)
+        form.reset(); currentStars = 0; applyStars(0); updateCount(); render()
+      })
+
+      document.getElementById('clear-form').addEventListener('click', ()=>{
+        form.reset(); currentStars = 0; applyStars(0); updateCount()
+      })
+
+      // Initialize rendering
+      render(); refreshAverage()
+      
+      // Auto-fill user name from profile if available
+      ;(function initForm(){
+        const profile = getProfileData()
+        if(profile && profile.displayName) {
+          const authorInput = document.getElementById('author')
+          authorInput.value = profile.displayName
+          authorInput.placeholder = `Logged in as ${profile.displayName}`
+          
+          // Show user tags preview
+          const tags = getUserTags()
+          if(tags.length > 0) {
+            const tagsPreview = document.createElement('div')
+            tagsPreview.className = 'muted'
+            tagsPreview.style.marginTop = '8px'
+            tagsPreview.style.fontSize = '12px'
+            tagsPreview.innerHTML = `Your tags: <div style="display:inline-flex; flex-wrap:wrap; gap:6px; margin-left:4px;">${tags.map(t => `<span class="badge" style="font-size:11px; padding:4px 8px; background:#e3f2fd; color:#1976d2; border-color:#bbdefb">${escapeHtml(t)}</span>`).join('')}</div>`
+            authorInput.parentElement.appendChild(tagsPreview)
+          }
+        }
+      })()
+    })()
+  </script>
+
+  <!-- Screen reader only styles -->
+  <style>.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}</style>
+</body>
+</html>

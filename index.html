@@ -1,0 +1,486 @@
+<!-- 
+  Reference Disclaimer:
+  This project was developed by the team as part of the DECO1800 course at The University of Queensland.
+
+  The primary programming work—including HTML structure, CSS styling, JavaScript functionality, and data integration—
+  was completed by the student team. Generative AI tools such as ChatGPT and Codex (OpenAI, 2025) were used 
+  to assist in ideation, troubleshooting, SVG generation, code simplification, and refinement. 
+  All AI-generated content was critically reviewed, adapted, and modified by team members to ensure correctness,
+  originality, and alignment with the project’s design intent and academic integrity standards.
+
+  Additional tools and references used:
+  - Anima. (2025). Anima (Icon set and design assistant) [Computer software]. AnimaApp Inc. https://www.animaapp.com
+  - Figma. (2025). Figma (used for original design) [Computer software]. Figma Inc. https://www.figma.com
+  - Font Awesome. (2021). Font Awesome 6 [Icon set]. Fonticons, Inc. https://fontawesome.com
+  - HTML5 tutorial from Runoob: https://www.runoob.com/html/html5-intro.html
+-->
+  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dog Friendly Map - Dog Walking Areas</title>
+  <link rel="icon" type="image/svg+xml" href="images/logo.svg">
+  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Primary navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-left">
+        <!--
+        Logo concept and visual styling were co-developed using generative AI tools:
+        ChatGPT (OpenAI, 2025) was used to assist in idea generation and iteration,
+        while Codex (OpenAI, 2025) was used for SVG code simplification and optimisation.
+        All outputs were reviewed and refined manually to ensure they align with the design intent.
+        -->
+        <!-- Brand entry point -->
+        <a class="logo" href="index.html" aria-label="Dog Friendly Map home">
+          <img src="images/logo.svg" class="logo-img" alt="Dog Friendly Map logo">
+          <span>Dog Friendly Map</span>
+        </a>
+        <button class="nav-link" onclick="showAbout()">ⓘ About</button>
+      </div>
+      <!-- Auth controls -->
+      <div class="nav-right">
+        <button class="login-btn" onclick="showLogin()">
+          <i class="fas fa-user"></i>
+          Login
+        </button>
+        <!-- Shown after login -->
+        <div class="user-profile hidden" id="userProfile">
+          <button class="nav-pill-btn profile-btn" onclick="showProfile()">
+            <i class="fas fa-id-card"></i>
+            Profile
+          </button>
+          <button class="nav-pill-btn logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <!-- Main layout -->
+  <main class="main-content">
+    <!-- Landing view -->
+    <div id="homePage" class="page active">
+      <div class="hero-section">
+        <!-- Slogan -->
+        <h1>Find the Perfect Dog Walking Spots</h1>
+        <p>Discover dog-friendly parks and off-leash areas near you</p>
+        
+        <!-- Address search -->
+        <div class="search-container">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <div class="search-input-wrapper">
+              <input type="text" id="addressSearch" placeholder="Enter your address in Brisbane">
+              <button type="button" class="clear-btn hidden" id="clearSearchBtn" aria-label="Clear search">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <button class="search-btn" onclick="searchLocation()">Search</button>
+          </div>
+          <div class="location-actions">
+            <button class="current-location-btn" onclick="useCurrentLocation()">
+              <i class="fas fa-crosshairs"></i>
+              Use Current Location
+            </button>
+          </div>
+        </div>
+
+        <div class="filter-controls-panel">
+          <!-- Quick filters -->
+          <div class="filter-bar filter-bar--split-rows">
+            <div class="filter-row">
+              <button class="filter-btn" data-filter-key="offLeash" onclick="toggleTopFilter('offLeash', this)">
+                <i class="fas fa-dog"></i>
+                Off-Leash
+              </button>
+              <button class="filter-btn" data-filter-key="fenced" onclick="toggleTopFilter('fenced', this)">
+                <i class="fas fa-shield"></i>
+                Fencing
+              </button>
+              <button class="filter-btn" data-filter-key="nightLighting" onclick="toggleTopFilter('nightLighting', this)">
+                <i class="fas fa-lightbulb"></i>
+                Night Lighting
+              </button>
+            </div>
+            <div class="filter-row">
+              <button class="filter-btn" data-filter-key="smallDogEnclosure" onclick="toggleTopFilter('smallDogEnclosure', this)">
+                <i class="fas fa-paw"></i>
+                Small Dog Enclosure
+              </button>
+              <button class="filter-btn" data-filter-key="agility" onclick="toggleTopFilter('agility', this)">
+                <i class="fas fa-person-running"></i>
+                Dog Agility Equipment
+              </button>
+            </div>
+          </div>
+
+          <!-- Saved filters shortcut -->
+          <div class="preferences-section">
+            <button class="preferences-btn" onclick="showPreferences()">
+              <i class="fas fa-heart"></i>
+              My Saved Preferences
+            </button>
+          </div>
+
+          <!-- Primary actions -->
+          <div class="action-buttons">
+            <button class="primary-btn" onclick="showMapView()">
+              <i class="fas fa-map"></i>
+              View Map
+            </button>
+            <button class="secondary-btn" onclick="openGuidedSearch()">
+              <i class="fas fa-magic"></i>
+              Help me find a park
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Map view -->
+    <div id="mapPage" class="page">
+      <div class="map-container">
+        <!-- Compact back button -->
+        <div class="map-back-btn">
+          <button class="back-btn" onclick="showHomePage()">
+            <i class="fas fa-arrow-left"></i>
+            Back
+          </button>
+        </div>
+        
+        <div id="map" class="map"></div>
+        
+        <!-- Floating filter toggle -->
+        <div class="floating-filter">
+          <button class="filter-toggle" onclick="toggleFloatingFilter()">
+            <i class="fas fa-filter"></i>
+            Filters
+          </button>
+          <div class="floating-filter-content hidden">
+            <div class="filter-option">
+              <button class="filter-btn" data-filter-key="offLeash" onclick="toggleTopFilter('offLeash', this)">
+                <i class="fas fa-dog"></i>
+                Off-Leash
+              </button>
+            </div>
+            <div class="filter-option">
+              <button class="filter-btn" data-filter-key="fenced" onclick="toggleTopFilter('fenced', this)">
+                <i class="fas fa-shield"></i>
+                Fencing
+              </button>
+            </div>
+            <div class="filter-option">
+              <button class="filter-btn" data-filter-key="nightLighting" onclick="toggleTopFilter('nightLighting', this)">
+                <i class="fas fa-lightbulb"></i>
+                Night Lighting
+              </button>
+            </div>
+            <div class="filter-option">
+              <button class="filter-btn" data-filter-key="smallDogEnclosure" onclick="toggleTopFilter('smallDogEnclosure', this)">
+                <i class="fas fa-paw"></i>
+                Small Dog Enclosure
+              </button>
+            </div>
+            <div class="filter-option">
+              <button class="filter-btn" data-filter-key="agility" onclick="toggleTopFilter('agility', this)">
+                <i class="fas fa-person-running"></i>
+                Dog Agility Equipment
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="map-legend">
+          <div class="legend-header">
+            <i class="fas fa-info-circle"></i>
+            <span>Map Legend</span>
+          </div>
+          <div class="legend-items">
+            <div class="legend-item">
+              <div class="legend-marker red-marker"></div>
+              <span>Regular Parks</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-marker green-marker"></div>
+              <span>Off-Leash Areas</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-marker blue-marker"></div>
+              <span>Your Location</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Directions CTA -->
+        <div class="navigation-btn hidden" id="navigationBtn">
+          <button onclick="openNavigation()">
+            <i class="fas fa-directions"></i>
+            Get Directions
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- List mode -->
+    <div id="listPage" class="page">
+      <div class="list-container">
+        <div class="list-header">
+          <h2>Nearby Dog Parks</h2>
+          <button class="back-btn" onclick="showHomePage()">
+            <i class="fas fa-arrow-left"></i>
+            Back
+          </button>
+        </div>
+        <div id="parksList" class="parks-list">
+          <!-- Populated via script.js -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal templates -->
+  
+  <!-- Filter popup -->
+  <div id="filterPopup" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="filterTitle">Filter Options</h3>
+        <button class="close-btn" onclick="closeModal('filterPopup')">&times;</button>
+      </div>
+      <div class="modal-body" id="filterContent">
+        <!-- Filled at runtime -->
+      </div>
+      <div class="modal-footer">
+        <button class="secondary-btn" onclick="closeModal('filterPopup')">Cancel</button>
+        <button class="primary-btn" onclick="applyFilter()">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Park details -->
+  <div id="parkDetailsPopup" class="modal">
+    <div class="modal-content park-details">
+      <div class="modal-header">
+        <h3 id="parkName">Park Name</h3>
+        <button class="close-btn" onclick="closeModal('parkDetailsPopup')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="park-info">
+          <div class="park-rating">
+            <div class="stars" id="parkStars"></div>
+            <span id="parkRating">4.5</span>
+          </div>
+          <div class="park-features" id="parkFeatures">
+            <!-- Injected via script.js -->
+          </div>
+          <div class="park-description" id="parkDescription">
+            <!-- Injected via script.js -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="secondary-btn" onclick="closeModal('parkDetailsPopup')">Close</button>
+        <button class="primary-btn" onclick="expandParkDetails()">View Full Details</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login modal -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Login</h3>
+        <button class="close-btn" onclick="closeModal('loginModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="secondary-btn" onclick="closeModal('loginModal')">Cancel</button>
+        <button class="primary-btn" onclick="login()">Login</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- About modal -->
+  <div id="aboutModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>About Dog Friendly Map</h3>
+        <button class="close-btn" onclick="closeModal('aboutModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="about-section">
+          <h4>Disclaimer</h4>
+          <p>This application provides information about dog-friendly areas based on publicly available data. Please verify current regulations and conditions before visiting any location.</p>
+        </div>
+        <div class="about-section">
+          <h4>Tutorial</h4>
+          <p>1. Enter your location in the search box<br>
+             2. Use filters to find parks that meet your needs<br>
+             3. View results on map or in list format<br>
+             4. Click on parks for detailed information<br>
+             5. Get directions to your chosen location</p>
+        </div>
+        <div class="about-section">
+          <h4>Data Sources</h4>
+       <p>Park data is sourced from Brisbane City Council's open data portal:<br>
+         - <a href="https://data.brisbane.qld.gov.au/explore/dataset/park-dog-off-leash-areas/information/?disjunctive.suburb" target="_blank" rel="noopener noreferrer">Park Dog Off-leash Areas</a><br>
+         - <a href="https://data.brisbane.qld.gov.au/explore/dataset/park-locations/information/?disjunctive.suburb&disjunctive.park_size" target="_blank" rel="noopener noreferrer">Park Locations</a></p>
+        </div>
+        <div class="about-section">
+          <h4>Team Members</h4>
+          <p>Xinnuo Li</p>
+          <p>Wenze Ou</p>
+          <p>Chengquan Jiang</p>
+          <p>Anton Wey Lam Lee</p>
+          <p>Yajie Han</p>
+        </div>
+        <div class="about-section">
+          <!-- Reference list -->
+          <h4>References</h4>
+          <p>Anima. (2025). Anima (Design assistant and Icon set) [Computer software]. AnimaApp Inc. https://www.animaapp.com</p>
+          <p>Figma. (2025). Figma (used for original design) [Computer software]. Figma Inc. https://www.figma.com</p>
+          <p>Font Awesome. (2021). Font Awesome 6 [Icon set]. Fonticons, Inc. https://fontawesome.com</p>
+          <p>Google. (2025). Google Maps JavaScript API [Computer software]. Google Maps Platform. https://developers.google.com/maps/documentation/javascript/overview</p>
+          <p>OpenAI. (2025). Codex (used for JavaScript, Icon generation and code simplification) [AI coding assistant]. https://openai.com/blog/openai-codex</p>
+          <p>OpenAI. (2025). ChatGPT (logo concept generation and brainstorm) [Large language model]. https://chat.openai.com/</p>
+          <p>OpenStreetMap contributors & Leaflet. (2025). OpenStreetMap with Leaflet [Map data and software]. https://www.openstreetmap.org | https://leafletjs.com</p>
+        </div>
+        <div class="about-section">  
+          <h4>Statement</h4>
+          <p>The team utilised OpenAI Codex to assist with JavaScript code optimisation and simplification, particularly in filtering logic and event handling. ChatGPT was used during the branding phase to brainstorm logo concepts and slogans, which were later refined manually in Figma.</p>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Saved preferences -->
+  <div id="preferencesModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>My Saved Preferences</h3>
+        <button class="close-btn" onclick="closeModal('preferencesModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="savedPreferences">
+          <!-- Filled from local storage -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Guided search -->
+  <div id="guidedModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Help me find a park</h3>
+        <button class="close-btn" onclick="closeModal('guidedModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="guidedStep1">
+          <p class="guided-intro">How would you like to search?</p>
+          <div class="button-row">
+            <button class="primary-btn" onclick="startGuidedQuickNearby()">
+              <i class="fas fa-location-arrow"></i>
+              Just show nearby parks
+            </button>
+            <button class="secondary-btn" onclick="showGuidedSpecific()">
+              <i class="fas fa-sliders-h"></i>
+              I have specific needs
+            </button>
+          </div>
+        </div>
+        <div id="guidedStepSpecific" class="hidden">
+          <div class="guided-stack">
+            <div class="guided-q">
+              <div class="guided-prompt">When do you usually walk your dog?</div>
+              <div class="guided-choice-row">
+                <label><input type="radio" name="g_time" value="Night"> At night</label>
+                <label><input type="radio" name="g_time" value="Day"> During the day</label>
+              </div>
+            </div>
+            <div class="guided-q">
+              <div class="guided-prompt">Do you need an off-leash area?</div>
+              <div class="guided-choice-row">
+                <label><input type="radio" name="g_offLeash" value="Yes"> Yes</label>
+                <label><input type="radio" name="g_offLeash" value="No"> No</label>
+              </div>
+            </div>
+            <div class="guided-q">
+              <div class="guided-prompt">Do you need secure fencing?</div>
+              <div class="guided-choice-row">
+                <label><input type="radio" name="g_fenced" value="Yes"> Yes</label>
+                <label><input type="radio" name="g_fenced" value="No"> No</label>
+              </div>
+            </div>
+            <div class="guided-q">
+              <div class="guided-prompt">My dog is</div>
+              <div class="guided-choice-row">
+                <label><input type="radio" name="g_size" value="Small"> Small dog</label>
+                <label><input type="radio" name="g_size" value="Large"> Large dog</label>
+              </div>
+            </div>
+            <div class="guided-q">
+              <div class="guided-prompt">Does your dog enjoy agility equipment?</div>
+              <div class="guided-choice-row">
+                <label><input type="radio" name="g_agility" value="Yes"> Yes</label>
+                <label><input type="radio" name="g_agility" value="No"> No</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="guidedBackBtn" class="secondary-btn hidden" onclick="backGuidedToStart()">Back</button>
+        <button class="secondary-btn" onclick="closeModal('guidedModal')">Cancel</button>
+        <button id="guidedApplyBtn" class="primary-btn hidden" onclick="applyGuidedFilters()">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Log but suppress missing optional assets
+    window.addEventListener('error', function(e) {
+      if (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK') {
+        console.log('Resource failed to load:', e.target.src || e.target.href);
+        e.preventDefault();
+      }
+    });
+  </script>
+  <script src="script.js?v=20251005"></script>
+  <script async defer 
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjZ5jdPjwR2ee_sglxPQB5tcrTxHMFO30&libraries=places&callback=initGoogleMaps"
+          onerror="console.error('Failed to load Google Maps API')">
+  </script>
+  <!-- Shared confirm dialog -->
+  <div id="confirm" class="modal hidden" aria-hidden="true">
+    <div class="modal-card small">
+      <div class="modal-header"><h3>Confirm</h3></div>
+      <div class="modal-body"><p id="confirmText">Are you sure?</p></div>
+      <div class="modal-footer">
+        <button id="confirmNo" class="btn ghost">No</button>
+        <button id="confirmYes" class="btn danger">Yes, delete</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
