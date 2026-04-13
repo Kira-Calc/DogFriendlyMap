@@ -1,133 +1,133 @@
 # Dog Friendly Map
 
-> Discover dog-friendly parks and off-leash areas across Brisbane — built for dog owners who want the best walking spots near them.
+> 发现布里斯班的宠物友好公园和无绳遛狗区域 — 为狗主人打造的最佳遛狗地点搜索工具。
 
 <p align="center">
   <img src="images/logo.svg" alt="Dog Friendly Map Logo" width="120">
 </p>
 
-## About
+## 关于项目
 
-**Dog Friendly Map** is an interactive web application that helps dog owners in Brisbane find nearby parks, off-leash areas, and dog-friendly facilities. The app pulls real-time data from Brisbane City Council's open data portal and displays it on an interactive Google Maps interface with rich filtering, guided search, and detailed park information.
+**Dog Friendly Map** 是一款交互式 Web 应用，帮助布里斯班的狗主人查找附近的公园、无绳遛狗区域及宠物友好设施。应用从布里斯班市政府开放数据门户实时获取公园数据，并通过 Google Maps 交互地图展示，提供丰富的筛选、引导式搜索和详细的公园信息。
 
-This project was developed as part of the **DECO1800 — Design Computing Studio 1** course at **The University of Queensland** (Semester 1, 2025).
+本项目是**昆士兰大学（The University of Queensland）** **DECO1800 — Design Computing Studio 1** 课程的团队作业（2025 年第一学期）。
 
-## Features
+## 功能特性
 
-### Interactive Map
-- Full Google Maps integration with custom markers (green for off-leash, red for regular parks, blue for user location)
-- Automatic geolocation detection with fallback to Brisbane CBD
-- Address search with geocoding (auto-scoped to Brisbane region)
-- Get directions to any park via Google Maps navigation
+### 交互式地图
+- 集成 Google Maps，使用自定义标记（绿色 = 无绳区域，红色 = 普通公园，蓝色 = 用户位置）
+- 自动检测用户地理位置，无法定位时回退到布里斯班 CBD
+- 地址搜索 + 地理编码（自动限定布里斯班范围）
+- 一键获取前往任意公园的导航路线
 
-### Smart Filtering
-- **Off-Leash Areas** — Find parks where dogs can roam free
-- **Fencing** — Filter for fully fenced parks for extra safety
-- **Night Lighting** — Locate parks suitable for evening walks
-- **Small Dog Enclosure** — Dedicated spaces for smaller breeds
-- **Dog Agility Equipment** — Parks with agility training facilities
-- Filters work across both map and list views
+### 智能筛选
+- **无绳区域（Off-Leash）** — 查找允许狗狗自由活动的公园
+- **围栏（Fencing）** — 筛选全封闭围栏公园，更安全
+- **夜间照明（Night Lighting）** — 适合傍晚遛狗的公园
+- **小型犬专区（Small Dog Enclosure）** — 小型犬专属活动空间
+- **敏捷训练设备（Dog Agility Equipment）** — 配备敏捷训练器材的公园
+- 筛选器同时适用于地图视图和列表视图
 
-### Guided Search ("Help me find a park")
-A step-by-step wizard that asks about your walking habits and dog's needs, then automatically applies the right filters:
-- Walking time preference (day vs. night)
-- Off-leash requirement
-- Fencing needs
-- Dog size
-- Agility equipment interest
+### 引导式搜索（"帮我找公园"）
+逐步引导向导，根据遛狗习惯和狗狗需求自动匹配筛选条件：
+- 遛狗时间偏好（白天 / 夜晚）
+- 是否需要无绳区域
+- 是否需要围栏
+- 狗狗体型（大型犬 / 小型犬）
+- 是否需要敏捷训练设备
 
-### Park Details Page
-- Comprehensive park information: hours, dog rules, amenities, facilities
-- Embedded Leaflet/OpenStreetMap preview with precise location
-- One-click Google Maps directions
-- Favorite/bookmark parks (persisted in localStorage)
-- **Community Reviews** — star ratings, written reviews, photo attachments, like/delete functionality
-- Reviews are stored locally in the browser per park
+### 公园详情页
+- 完整的公园信息：开放时间、遛狗规则、配套设施
+- 内嵌 Leaflet/OpenStreetMap 地图预览，精确定位
+- 一键跳转 Google Maps 导航
+- 收藏公园功能（数据持久化到 localStorage）
+- **社区评价系统** — 星级评分、文字评论、图片附件、点赞/删除功能
+- 评论按公园隔离，存储在浏览器本地
 
-### User Profile System
-- Customizable profile with avatar upload, display name, and user handle
-- Dog details card (name, breed, age, notes)
-- Walking preferences (morning/evening, dog size, experience level)
-- Saved locations (favorites) management with direct links to park details
-- Profile data persists across sessions via localStorage
-- User tags (e.g. "Morning walker", "Small dog owner") automatically appear on reviews
+### 用户档案系统
+- 可自定义头像上传、显示名称和用户 ID
+- 狗狗信息卡片（名字、品种、年龄、备注）
+- 遛狗偏好设置（早晨/傍晚、狗狗体型、经验水平）
+- 收藏地点管理，可直接跳转公园详情
+- 档案数据通过 localStorage 跨会话持久化
+- 用户标签（如"早晨遛狗人"、"小型犬主人"）自动显示在评论中
 
-### Saved Preferences
-- Bookmark favorite parks from the details page
-- Access all saved parks from the home screen via "My Saved Preferences"
+### 收藏偏好
+- 在公园详情页点击星标收藏
+- 在首页通过"我的收藏偏好"快速访问所有已收藏公园
 
-## Data Sources
+## 数据来源
 
-All park data is sourced live from the [Brisbane City Council Open Data Portal](https://www.data.brisbane.qld.gov.au/):
+所有公园数据实时来自[布里斯班市政府开放数据门户](https://www.data.brisbane.qld.gov.au/)：
 
-| Dataset | Description |
-|---------|-------------|
-| [Park Locations](https://data.brisbane.qld.gov.au/explore/dataset/park-locations/information/) | General park locations across Brisbane |
-| [Park Dog Off-Leash Areas](https://data.brisbane.qld.gov.au/explore/dataset/park-dog-off-leash-areas/information/) | Designated off-leash dog areas |
+| 数据集 | 说明 |
+|--------|------|
+| [Park Locations](https://data.brisbane.qld.gov.au/explore/dataset/park-locations/information/) | 布里斯班各区公园位置 |
+| [Park Dog Off-Leash Areas](https://data.brisbane.qld.gov.au/explore/dataset/park-dog-off-leash-areas/information/) | 指定无绳遛狗区域 |
 
-Data is fetched at runtime via the council's public REST API — no backend server required.
+数据通过市政府公开 REST API 在运行时获取 — 无需后端服务器。
 
-## Tech Stack
+## 技术栈
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | HTML5, CSS3, Vanilla JavaScript |
-| Map (main) | [Google Maps JavaScript API](https://developers.google.com/maps/documentation/javascript) |
-| Map (details) | [Leaflet](https://leafletjs.com/) + [OpenStreetMap](https://www.openstreetmap.org/) |
-| Icons | [Font Awesome 6](https://fontawesome.com/) |
-| Data | Brisbane City Council Open Data REST API |
-| Storage | Browser localStorage (profiles, reviews, favorites) |
-| Design | [Figma](https://www.figma.com/) (original wireframes and mockups) |
+| 层级 | 技术 |
+|------|------|
+| 前端 | HTML5、CSS3、原生 JavaScript |
+| 地图（主页） | [Google Maps JavaScript API](https://developers.google.com/maps/documentation/javascript) |
+| 地图（详情页） | [Leaflet](https://leafletjs.com/) + [OpenStreetMap](https://www.openstreetmap.org/) |
+| 图标 | [Font Awesome 6](https://fontawesome.com/) |
+| 数据 | Brisbane City Council Open Data REST API |
+| 存储 | 浏览器 localStorage（档案、评论、收藏） |
+| 设计 | [Figma](https://www.figma.com/)（原始线框图和视觉稿） |
 
-## Project Structure
+## 项目结构
 
 ```
 DogFriendlyMap/
-├── index.html            # Main app — home page, map view, list view, modals
-├── full_details.html      # Park details page with reviews and Leaflet map
-├── profile.html           # User profile management page
-├── script.js              # Core app logic — map, filters, data fetching, navigation
-├── profile.js             # Profile page logic — localStorage persistence, UI
+├── index.html            # 主应用 — 首页、地图视图、列表视图、弹窗
+├── full_details.html      # 公园详情页 — 评论系统 + Leaflet 地图
+├── profile.html           # 用户档案管理页
+├── script.js              # 核心逻辑 — 地图、筛选、数据获取、页面导航
+├── profile.js             # 档案页逻辑 — localStorage 持久化、UI 交互
 ├── css/
-│   ├── styles.css         # Global styles, responsive design, all page components
-│   └── profile.css        # Profile page specific styles
+│   ├── styles.css         # 全局样式、响应式设计、所有页面组件
+│   └── profile.css        # 档案页专属样式
 └── images/
-    └── logo.svg           # App logo (map pin + dog paw)
+    └── logo.svg           # 应用 Logo（地图钉 + 狗爪）
 ```
 
-## Getting Started
+## 快速开始
 
-### Prerequisites
-- A modern web browser (Chrome, Firefox, Safari, Edge)
-- No build tools, Node.js, or backend server required
+### 前提条件
+- 现代浏览器（Chrome、Firefox、Safari、Edge）
+- 无需构建工具、Node.js 或后端服务器
 
-### Running Locally
+### 本地运行
 
-1. **Clone the repository**
+1. **克隆仓库**
    ```bash
    git clone https://github.com/Kira-Calc/DogFriendlyMap.git
    cd DogFriendlyMap
    ```
 
-2. **Start a local server** (required for API calls)
+2. **启动本地服务器**（API 调用需要）
    ```bash
    # Python 3
    python3 -m http.server 8080
 
-   # Or Node.js
+   # 或 Node.js
    npx serve .
    ```
 
-3. **Open in browser**
+3. **在浏览器中打开**
    ```
    http://localhost:8080
    ```
 
-> **Note:** The app requires an internet connection to load park data from Brisbane City Council's API and to render Google Maps.
+> **注意：** 应用需要联网才能从布里斯班市政府 API 加载公园数据并渲染 Google Maps。
 
-## Team
+## 团队成员
 
-This project was developed by a team of five students at The University of Queensland:
+本项目由昆士兰大学五名学生共同开发：
 
 - **Xinnuo Li**
 - **Wenze Ou**
@@ -135,16 +135,16 @@ This project was developed by a team of five students at The University of Queen
 - **Anton Wey Lam Lee**
 - **Yajie Han**
 
-## Acknowledgements
+## 致谢
 
-- [Brisbane City Council](https://www.brisbane.qld.gov.au/) — Open data portal for park datasets
+- [布里斯班市政府](https://www.brisbane.qld.gov.au/) — 公园开放数据集
 - [Google Maps Platform](https://developers.google.com/maps) — Maps JavaScript API
-- [Leaflet](https://leafletjs.com/) & [OpenStreetMap](https://www.openstreetmap.org/) — Detail page map
-- [Font Awesome](https://fontawesome.com/) — Icon library
-- [Anima](https://www.animaapp.com/) — Design assistant and icon set
-- [Figma](https://www.figma.com/) — UI/UX design tool
-- AI tools (ChatGPT, Codex by OpenAI) were used to assist with ideation, code simplification, and troubleshooting. All AI-generated content was critically reviewed and adapted by the team.
+- [Leaflet](https://leafletjs.com/) & [OpenStreetMap](https://www.openstreetmap.org/) — 详情页地图
+- [Font Awesome](https://fontawesome.com/) — 图标库
+- [Anima](https://www.animaapp.com/) — 设计辅助工具和图标集
+- [Figma](https://www.figma.com/) — UI/UX 设计工具
+- AI 工具（ChatGPT、Codex，OpenAI）用于辅助创意构思、代码简化和问题排查，所有 AI 生成内容均经团队成员审查和修改。
 
-## License
+## 许可
 
-This project was created for academic purposes as part of DECO1800 at UQ. All rights reserved by the authors.
+本项目为昆士兰大学 DECO1800 课程学术作品，版权归作者所有。
