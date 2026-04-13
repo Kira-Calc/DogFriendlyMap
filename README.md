@@ -56,6 +56,17 @@
 - 在公园详情页点击星标收藏
 - 在首页通过"我的收藏偏好"快速访问所有已收藏公园
 
+## 项目展示
+
+### 项目概述与纸质原型
+![项目概述](images/portfolio-1.png)
+
+### Figma 设计稿与数据接口
+![Figma 设计与 API](images/portfolio-2.png)
+
+### 筛选组件与响应式适配
+![筛选与响应式](images/portfolio-3.png)
+
 ## 数据来源
 
 所有公园数据实时来自[布里斯班市政府开放数据门户](https://www.data.brisbane.qld.gov.au/)：
